@@ -12,8 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('departments', function (Blueprint $table) {
-            $table->id();
-            $table->unsignedBigInteger('department_id');
+            $table->id('department_id');
+            $table->string('department_name');
+            $table->string('department_head')->nullable();
             $table->timestamps();
         });
     }

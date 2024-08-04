@@ -1,5 +1,7 @@
 <?php
 
+use Illuminate\Support\Facades\Facade;
+
 return [
 
     /*
@@ -122,5 +124,10 @@ return [
         'driver' => env('APP_MAINTENANCE_DRIVER', 'file'),
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
+
+    'aliases' => Facade::defaultAliases()->merge([
+        'JwtAuth'=> Tymon\JWTAuth\Facades\JWTAuth::class,
+        'JwtFactory'=> Tymon\JWTAuth\Facades\JWTFactory::class
+    ])->toArray(),
 
 ];

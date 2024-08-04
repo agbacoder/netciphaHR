@@ -11,8 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('employee_documents', function (Blueprint $table) {
-            $table->id();
+        Schema::create('folders', function (Blueprint $table) {
+            $table->unsignedBigInteger('folder_id')->primary();
+            $table->string('folder_name');
+            $table->string('folder_address');
             $table->timestamps();
         });
     }
@@ -22,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('employee_documents');
+        Schema::dropIfExists('folders');
     }
 };
