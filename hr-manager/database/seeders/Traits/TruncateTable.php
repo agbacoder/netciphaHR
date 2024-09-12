@@ -2,13 +2,17 @@
 
 namespace Database\Seeders\Traits;
 
+use Illuminate\Support\Facades\DB;
 
-trait TruncataTable
+
+
+trait TruncateTable
 {
-    // protected function truncate()
-    // {
+    protected function truncate($table)
+    {
+        DB::table($table)->truncate();
 
-    // }
+    }
 }
 
 ?>

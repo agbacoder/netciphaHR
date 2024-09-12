@@ -11,15 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('auth', function (Blueprint $table) {
+        Schema::create('users', function (Blueprint $table) {
             $table->id()->primary();
-            $table->string('employee_id')->unique();
-            $table->string('password');
-            $table->timestamps();
-
             $table->foreignUuid('user_id')->constrained(
-                      table: 'employees', column: 'user_id', indexName: 'auth_user_id'
+                table: 'employees', column: 'user_id', indexName: 'users_user_id'
             )->onDelete('cascade');
+            $table->string('email')->unique();
+            $table->string('password');
+            $table->rememberToken();
+            $table->timestamps();
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {
@@ -27,6 +27,7 @@ return new class extends Migration
             $table->string('token');
             $table->timestamp('created_at')->nullable();
         });
+
     }
 
     /**
@@ -34,7 +35,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('auth');
+        Schema::dropIfExists('users');
         Schema::dropIfExists('password_reset_tokens');
 
     }

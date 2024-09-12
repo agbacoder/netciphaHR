@@ -5,7 +5,10 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
-use Validator;
+use App\Models\Users;
+use Illuminate\Support\Facades\Validator;
+use Tymon\JWTAuth\Facades\JWTAuth;
+use Tymon\JWTAuth\Exceptions\JWTException;
 
 class Authcontroller extends Controller
 {
@@ -16,7 +19,7 @@ class Authcontroller extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth:api', ['except' => ['login']]);
+        // $this->middleware('auth:api', ['except' => ['login']]);
     }
 
     /**
@@ -24,17 +27,24 @@ class Authcontroller extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function login()
+    public function login(Request $request)
     {
+        $validator = Validator::make($request->all(), [
+            'email' => 'required|email',
+            'password' => 'required|string',
+        ]);
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 422);
+        }
         $credentials = request(['email', 'password']);
 
-        
-
-        // if (! $token = auth()->attempt($credentials)) {
-        //     return response()->json(['error' => 'Unauthorized'], 401);
-        // }
-
-        // return $this->respondWithToken($token);
+        if (!Auth::attempt($credentials)) {
+            return response()->json(['error' => 'records do not match'], 401);
+        }
+        if (!$token = Auth::attempt($credentials)) {
+            return response()->json(['error' => 'Unauthorized'], 401);
+        }
+        return $this->respondWithToken($token);
     }
 
     /**
@@ -42,9 +52,13 @@ class Authcontroller extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function personalProfile()
+    public function profile(Request $request)
     {
-        return response()->json(auth()->user());
+        // Retrieve the authenticated user
+        $user = Auth::user();
+
+        // Return the user's profile information
+        return response()->json($user);
     }
 
     /**
@@ -54,7 +68,7 @@ class Authcontroller extends Controller
      */
     public function logout()
     {
-        auth()->logout();
+        Auth::logout();
 
         return response()->json(['message' => 'Successfully logged out']);
     }
@@ -66,7 +80,7 @@ class Authcontroller extends Controller
      */
     public function refresh()
     {
-        return $this->respondWithToken(auth()->refresh());
+        return $this->respondWithToken(Auth::refresh());
     }
 
     /**
@@ -81,7 +95,7 @@ class Authcontroller extends Controller
         return response()->json([
             'access_token' => $token,
             'token_type' => 'bearer',
-            'expires_in' => auth()->factory()->getTTL() * 60
+            'expires_in' => Auth::factory()->getTTL() * 60
         ]);
     }
 }

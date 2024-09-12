@@ -2,6 +2,9 @@
 
 namespace Database\Factories;
 
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
+
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -16,8 +19,13 @@ class EmployeesFactory extends Factory
      */
     public function definition(): array
     {
-        return [
-            //
+        return
+        [
+            'user_id' => Str::random(10),
+            'first_name' => fake()->name(),
+            'last_name' => fake()->name(),
+            'email' => fake()->unique()->safeEmail(),
+
         ];
     }
 }
